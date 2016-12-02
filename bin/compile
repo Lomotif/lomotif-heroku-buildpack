@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # bin/compile <build-dir> <cache-dir>
 
-set -o nounset  # Fail on nonexistent variables
-set -o errexit  # Fail on error
-set -o pipefile # Fail on any error in a chain of piped commands
+set -o nounset   # Fail on nonexistent variables
+set -o errexit   # Fail on error
+set -o pipefail  # Fail on any error in a chain of piped commands
 
 BUILD_DIR=$1
 CACHE_DIR=$2
