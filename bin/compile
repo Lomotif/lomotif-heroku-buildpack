@@ -74,6 +74,6 @@ fi
 
 mkdir -p $BUILD_DIR/.profile.d
 cat <<EOF >$BUILD_DIR/.profile.d/gettext.sh
-export PATH=$GETTEXT_HOME/bin:$PATH
-export LD_LIBRARY_PATH=$GETTEXT_HOME/lib:$LD_LIBRARY_PATH
+export PATH=${PATH}
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 EOF
