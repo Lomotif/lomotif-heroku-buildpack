@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # bin/compile <build-dir> <cache-dir>
 
-set -e
+set -o nounset  # Fail on nonexistent variables
+set -o errexit  # Fail on error
+set -o pipefile # Fail on any error in a chain of piped commands
 
 BUILD_DIR=$1
 CACHE_DIR=$2
@@ -31,33 +33,32 @@ if [ "$(ls -A $GETTEXT_CACHE)" ]; then
     cp -R $GETTEXT_CACHE/* $GETTEXT_HOME
 fi
 
-if [ ! `which msgfmt` ]; then
-    build-step "Compiling gettext"
+if [ ! $(which msgfmt) ]; then
 
     build-info "Downloading"
     d=$(mktemp -dt XXXX)
     curl -s "$GETTEXT_TAR" -o "$d"/pkg.tar.gz
 
-    if [ $(shasum ${GETTEXT_TAR} | cut -d ' '  -f 1) != "${GETTEXT_SHA}" ]; then
+    if [ $(shasum "${GETTEXT_TAR}" | cut -d ' '  -f 1) != "${GETTEXT_SHA}" ]; then
       build-warn "Signatures do not match!"
     fi
 
     build-info "Unpacking and installing"
     cd $d
     tar -xf pkg.tar.gz
-    cd gettext-latest
+    cd gettext-0.19.8.1
 
     build-info "Configure"
     ./configure --prefix=$GETTEXT_HOME --with-included-libunistring > /tmp/gettext_conf 2>&1
 
-    build-info "make"
+    build-info "Compiling gettext"
     make > /tmp/gettext_make 2>&1
-
-    build-info "make install"
     make install > /tmp/gettext_makeinstall 2>&1
+
+    build-info "Done"
 fi
 
-build-step "Cleanup"
+build-info "Cleanup"
 # Make sure the cache is empty
 rm -rf $GETTEXT_CACHE/*
 
