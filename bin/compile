@@ -23,7 +23,7 @@ GETTEXT_HOME=$BUILD_DIR/.gettext
 GETTEXT_CACHE=$CACHE_DIR/.gettext
 
 PATH=$GETTEXT_HOME/bin:$PATH
-LD_LIBRARY_PATH=$GETTEXT_HOME/lib:$LD_LIBRARY_PATH
+LD_LIBRARY_PATH=$GETTEXT_HOME/lib:${LD_LIBRARY_PATH:-/app/.heroku/vendor/lib}
 
 # Prepare the various paths
 mkdir -p $GETTEXT_HOME
