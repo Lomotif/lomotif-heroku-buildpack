@@ -39,8 +39,9 @@ if [ ! $(which msgfmt) ]; then
     d=$(mktemp -dt XXXX)
     curl -s "$GETTEXT_TAR" -o "$d"/pkg.tar.gz
 
-    if [ $(shasum "${GETTEXT_TAR}" | cut -d ' '  -f 1) != "${GETTEXT_SHA}" ]; then
+    if [ $(shasum "${d}/pkg.tar.gz" | cut -d ' '  -f 1) != "${GETTEXT_SHA}" ]; then
       build-warn "Signatures do not match!"
+      exit 1
     fi
 
     build-info "Unpacking and installing"
