@@ -5,17 +5,23 @@ set -e
 
 BUILD_DIR=$1
 CACHE_DIR=$2
-BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
 
-GETTEXT_TAR="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.3.1.tar.gz"
+# Output helpers
+BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
+source $BIN_DIR/utils
+
+build-step "Installing gettext"
+
+# Get latest release version from gnu mailing list
+# Google for latest version on ftp, and find corresponding keys
+# in announcement on mailing list
+GETTEXT_TAR="https://ftp.gnu.org/pub/gnu/gettext/gettext-0.19.8.1.tar.gz"
+GETTEXT_SHA="b5d24ba2958c91fc5cc0058165837c99a0f58784"
 GETTEXT_HOME=$BUILD_DIR/.gettext
 GETTEXT_CACHE=$CACHE_DIR/.gettext
 
 PATH=$GETTEXT_HOME/bin:$PATH
 LD_LIBRARY_PATH=$GETTEXT_HOME/lib:$LD_LIBRARY_PATH
-
-# Output helpers
-source $BIN_DIR/utils
 
 # Prepare the various paths
 mkdir -p $GETTEXT_HOME
@@ -26,18 +32,22 @@ if [ "$(ls -A $GETTEXT_CACHE)" ]; then
 fi
 
 if [ ! `which msgfmt` ]; then
-    build-step "compiling gettext"
+    build-step "Compiling gettext"
 
-    build-info "downloading"
+    build-info "Downloading"
     d=$(mktemp -dt XXXX)
     curl -s "$GETTEXT_TAR" -o "$d"/pkg.tar.gz
 
-    build-info "unpacking and installing"
+    if [ $(shasum ${GETTEXT_TAR} | cut -d ' '  -f 1) != "${GETTEXT_SHA}" ]; then
+      build-warn "Signatures do not match!"
+    fi
+
+    build-info "Unpacking and installing"
     cd $d
     tar -xf pkg.tar.gz
-    cd gettext-0.18.3.1
+    cd gettext-latest
 
-    build-info "configure"
+    build-info "Configure"
     ./configure --prefix=$GETTEXT_HOME --with-included-libunistring > /tmp/gettext_conf 2>&1
 
     build-info "make"
@@ -47,7 +57,7 @@ if [ ! `which msgfmt` ]; then
     make install > /tmp/gettext_makeinstall 2>&1
 fi
 
-build-step "cleanup"
+build-step "Cleanup"
 # Make sure the cache is empty
 rm -rf $GETTEXT_CACHE/*
 
