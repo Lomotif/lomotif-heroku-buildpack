@@ -29,23 +29,23 @@ LD_LIBRARY_PATH=$GETTEXT_HOME/lib:${LD_LIBRARY_PATH:-/app/.heroku/vendor/lib}
 mkdir -p $GETTEXT_HOME
 mkdir -p $GETTEXT_CACHE
 
-if [ "$(ls -A $GETTEXT_CACHE)" ]; then
-    cp -R $GETTEXT_CACHE/* $GETTEXT_HOME
-fi
+# if [ "$(ls -A $GETTEXT_CACHE)" ]; then
+#     cp -R $GETTEXT_CACHE/* $GETTEXT_HOME
+# fi
 
 if [ ! $(which msgfmt) ]; then
 
     build-info "Downloading"
-    d=$(mktemp -dt XXXX)
-    curl -s "$GETTEXT_TAR" -o "$d"/pkg.tar.gz
+    # d=$(mktemp -dt XXXX)
+    curl -s "$GETTEXT_TAR" -o "${GETTEXT_CACHE}"/pkg.tar.gz
 
-    if [ $(shasum "${d}/pkg.tar.gz" | cut -d ' '  -f 1) != "${GETTEXT_SHA}" ]; then
+    if [ $(shasum "${GETTEXT_CACHE}/pkg.tar.gz" | cut -d ' '  -f 1) != "${GETTEXT_SHA}" ]; then
       build-warn "Signatures do not match!"
       exit 1
     fi
 
     build-info "Unpacking and installing"
-    cd $d
+    cd ${GETTEXT_CACHE}
     tar -xf pkg.tar.gz
     cd gettext-0.19.8.1
 
@@ -61,10 +61,10 @@ fi
 
 build-info "Cleanup"
 # Make sure the cache is empty
-rm -rf $GETTEXT_CACHE/*
+# rm -rf $GETTEXT_CACHE/*
 
 # Store a copy of it in the cache so it doesn't have to be fetched again
-cp -R $GETTEXT_HOME/* $GETTEXT_CACHE/
+# cp -R $GETTEXT_HOME/* $GETTEXT_CACHE/
 
 # Check for an essential binary to make sure it's installed
 if [ ! `which msgfmt` ]; then
