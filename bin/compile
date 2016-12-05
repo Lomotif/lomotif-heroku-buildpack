@@ -59,6 +59,7 @@ if [ ! $(which msgfmt) ]; then
     ./configure --prefix="${GETTEXT_HOME}" --with-included-libunistring # > /tmp/gettext_conf 2>&1
 
     build-info "Compiling gettext"
+    make clean
     make # > /tmp/gettext_make 2>&1
     make install # > /tmp/gettext_makeinstall 2>&1
 
