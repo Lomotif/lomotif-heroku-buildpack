@@ -29,6 +29,9 @@ LD_LIBRARY_PATH=$GETTEXT_HOME/lib:${LD_LIBRARY_PATH:-/app/.heroku/vendor/lib}
 mkdir -p $GETTEXT_HOME
 mkdir -p $GETTEXT_CACHE
 
+build-info "GETTEXT_HOME: ${GETTEXT_HOME}"
+build-info "GETTEXT_CACHE: ${GETTEXT_CACHE}"
+
 # if [ "$(ls -A $GETTEXT_CACHE)" ]; then
 #     cp -R $GETTEXT_CACHE/* $GETTEXT_HOME
 # fi
@@ -74,6 +77,6 @@ fi
 
 mkdir -p $BUILD_DIR/.profile.d
 cat <<EOF >$BUILD_DIR/.profile.d/gettext.sh
-export PATH=${PATH}
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
+export PATH=${GETTEXT_HOME}/bin:${PATH}
+export LD_LIBRARY_PATH=${GETTEXT_HOME}/lib:${LD_LIBRARY_PATH}
 EOF
