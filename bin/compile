@@ -32,6 +32,9 @@ mkdir -p $GETTEXT_CACHE
 build-info "GETTEXT_HOME: ${GETTEXT_HOME}"
 build-info "GETTEXT_CACHE: ${GETTEXT_CACHE}"
 
+# Debug
+env | sort
+
 # if [ "$(ls -A $GETTEXT_CACHE)" ]; then
 #     cp -R $GETTEXT_CACHE/* $GETTEXT_HOME
 # fi
