@@ -27,7 +27,7 @@ LD_LIBRARY_PATH=$GETTEXT_HOME/lib:${LD_LIBRARY_PATH:-/app/.heroku/vendor/lib}
 
 # Prepare the various paths
 mkdir -p $GETTEXT_HOME/bin
-mkdir -p $GETTEXT_CACHE/lib
+mkdir -p $GETTEXT_HOME/lib
 
 build-info "GETTEXT_HOME: ${GETTEXT_HOME}"
 build-info "GETTEXT_CACHE: ${GETTEXT_CACHE}"
