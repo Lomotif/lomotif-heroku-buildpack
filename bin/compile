@@ -19,7 +19,8 @@ build-step "Installing gettext"
 # in announcement on mailing list
 GETTEXT_TAR="https://ftp.gnu.org/pub/gnu/gettext/gettext-0.19.8.1.tar.gz"
 GETTEXT_SHA="b5d24ba2958c91fc5cc0058165837c99a0f58784"
-GETTEXT_HOME=$BUILD_DIR/.gettext
+GETTEXT_HOME=/app/.gettext
+GETTEXT_BUILD=$BUILD_DIR/.gettext
 GETTEXT_CACHE=$CACHE_DIR/.gettext
 
 PATH=$GETTEXT_HOME/bin:$PATH
@@ -27,9 +28,11 @@ LD_LIBRARY_PATH=$GETTEXT_HOME/lib:${LD_LIBRARY_PATH:-/app/.heroku/vendor/lib}
 
 # Prepare the various paths
 mkdir -p $GETTEXT_HOME
+mkdir -p $GETTEXT_BUILD
 mkdir -p $GETTEXT_CACHE
 
 build-info "GETTEXT_HOME: ${GETTEXT_HOME}"
+build-info "GETTEXT_BUILD: ${GETTEXT_BUILD}"
 build-info "GETTEXT_CACHE: ${GETTEXT_CACHE}"
 
 # if [ "$(ls -A $GETTEXT_CACHE)" ]; then
@@ -40,15 +43,15 @@ if [ ! $(which msgfmt) ]; then
 
     build-info "Downloading"
     # d=$(mktemp -dt XXXX)
-    curl -s "$GETTEXT_TAR" -o "${GETTEXT_CACHE}"/pkg.tar.gz
+    curl -s "$GETTEXT_TAR" -o "${GETTEXT_BUILD}"/pkg.tar.gz
 
-    if [ $(shasum "${GETTEXT_CACHE}/pkg.tar.gz" | cut -d ' '  -f 1) != "${GETTEXT_SHA}" ]; then
+    if [ $(shasum "${GETTEXT_BUILD}/pkg.tar.gz" | cut -d ' '  -f 1) != "${GETTEXT_SHA}" ]; then
       build-warn "Signatures do not match!"
       exit 1
     fi
 
     build-info "Unpacking and installing"
-    cd ${GETTEXT_CACHE}
+    cd ${GETTEXT_BUILD}
     tar -xf pkg.tar.gz
     cd gettext-0.19.8.1
 
